@@ -169,3 +169,26 @@ img.content-image {
 img.content-image + small {
     margin-top: 0.5rem;
 }
+
+/* --- Water Ripple Effect --- */
+.ripple {
+    position: fixed;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(61, 126, 235, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+    transform: scale(0);
+    animation: ripple-expand 0.6s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+    to {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ripple {
+        display: none;
+    }
+}
