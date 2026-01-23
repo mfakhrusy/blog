@@ -11,12 +11,21 @@ const template = (title, date, content) => `<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title} - Fahru's Finite Space</title>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'noon';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
 </head>
 <body>
+    <header class="container post-page-header">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme"></button>
+    </header>
     <div id="navbar"></div>
 
     <main class="container container-post">

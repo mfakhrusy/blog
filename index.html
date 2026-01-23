@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Tech Blog</title>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'noon';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +22,9 @@
             <h1>Fahru's finite space</h1>
             <p class="subtitle">An assortment of emotions about the state of my mind</p>
         </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <!-- Icons injected by JS -->
+        </button>
     </header>
 
     <main class="container">

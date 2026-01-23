@@ -1,5 +1,24 @@
 /* --- Global Styles & Variables --- */
 :root {
+    --font-family-sans: 'Inter', sans-serif;
+    --font-family-mono: 'Source Code Pro', monospace;
+}
+
+/* Dawn - warm peachy sunrise */
+[data-theme="dawn"] {
+    --primary-color: #3d2c29;
+    --secondary-color: #7a5f5a;
+    --accent-color: #d4726a;
+    --background-color: #fff5f0;
+    --surface-color: #ffe8dc;
+    --border-color: #f0d0c0;
+    --code-bg-color: #2d2424;
+    --code-text-color: #f8e8e0;
+    --inline-code-bg: #f5e0d8;
+}
+
+/* Noon - bright daylight (default) */
+[data-theme="noon"] {
     --primary-color: #0a0a0a;
     --secondary-color: #5a5a5a;
     --accent-color: #3d7eeb;
@@ -8,9 +27,33 @@
     --border-color: #eaeaea;
     --code-bg-color: #2d2d2d;
     --code-text-color: #f8f8f2;
+    --inline-code-bg: #eef1f5;
+}
 
-    --font-family-sans: 'Inter', sans-serif;
-    --font-family-mono: 'Source Code Pro', monospace;
+/* Dusk - warm orange/purple sunset */
+[data-theme="dusk"] {
+    --primary-color: #2d1f3d;
+    --secondary-color: #6b5a7a;
+    --accent-color: #e07850;
+    --background-color: #faf0eb;
+    --surface-color: #f0e0d8;
+    --border-color: #dcc8be;
+    --code-bg-color: #2d2030;
+    --code-text-color: #f0e8f0;
+    --inline-code-bg: #ebe0e8;
+}
+
+/* Night - dark mode */
+[data-theme="night"] {
+    --primary-color: #e8e8e8;
+    --secondary-color: #a0a0a0;
+    --accent-color: #7eb8ff;
+    --background-color: #0d1117;
+    --surface-color: #161b22;
+    --border-color: #30363d;
+    --code-bg-color: #1a1a24;
+    --code-text-color: #e0e8f0;
+    --inline-code-bg: #21262d;
 }
 
 body {
@@ -51,6 +94,7 @@ h1, h2, h3 {
 
 /* --- Header & Footer --- */
 header {
+    position: relative;
     border-bottom: 1px solid var(--border-color);
     text-align: center;
     padding-top: 4rem;
@@ -70,6 +114,47 @@ header .subtitle {
     font-size: 1.1rem;
     color: var(--secondary-color);
     margin-top: 0.5rem;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+[data-theme="night"] .theme-toggle {
+    background: #ffffff;
+    border-color: #ffffff;
+}
+
+.theme-toggle svg,
+.theme-toggle img {
+    width: 28px;
+    height: 28px;
+}
+
+/* Minimal header for post pages (just contains theme toggle) */
+.post-page-header {
+    position: relative;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border: none;
 }
 
 footer {
@@ -152,7 +237,7 @@ code {
 
 /* For inline code */
 p > code, li > code {
-    background-color: #eef1f5;
+    background-color: var(--inline-code-bg);
     padding: 0.2em 0.4em;
     border-radius: 4px;
     font-size: 85%;
@@ -174,7 +259,7 @@ img.content-image + small {
 .ripple {
     position: fixed;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(61, 126, 235, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 30%, transparent) 0%, transparent 70%);
     pointer-events: none;
     transform: scale(0);
     animation: ripple-expand 0.6s ease-out forwards;
