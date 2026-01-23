@@ -1,12 +1,7 @@
 // script.js
 
-// This file is ready for your custom JavaScript.
-// You could add features like:
-// - A mobile navigation toggle
-// - A theme switcher (light/dark mode)
-// - Interactive code block features (e.g., a "copy to clipboard" button)
-
 document.addEventListener('DOMContentLoaded', () => {
+    // Inject navbar
     const navbar = document.getElementById('navbar');
     if (navbar) {
         navbar.innerHTML = `
@@ -14,5 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="/">Home</a>
             </nav>
         `;
+    }
+
+    // Parse markdown content
+    const mdScript = document.getElementById('md-content');
+    const postContent = document.querySelector('.post-content');
+    if (mdScript && postContent && window.marked) {
+        postContent.innerHTML = marked.parse(mdScript.textContent);
     }
 });
