@@ -7,5 +7,12 @@
 // - Interactive code block features (e.g., a "copy to clipboard" button)
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Blog successfully loaded!');
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        navbar.innerHTML = `
+            <nav class="container">
+                <a href="/">Home</a>
+            </nav>
+        `;
+    }
 });
