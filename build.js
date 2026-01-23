@@ -100,7 +100,7 @@ postsData.forEach(({ meta, html, slug }) => {
 });
 
 // Generate RSS feed
-const SITE_URL = 'https://fahru.my.id';
+const SITE_URL = 'https://blog.fahru.me';
 const rssItems = postsData
     .filter(p => p.meta.date)
     .sort((a, b) => new Date(b.meta.date) - new Date(a.meta.date))
