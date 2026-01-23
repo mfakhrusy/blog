@@ -2,10 +2,14 @@
   "name": "blog-fahru-me",
   "private": true,
   "scripts": {
-    "deploy": "wrangler pages deploy . --project-name=blog-fahru-me",
-    "dev": "python3 -m http.server 8001"
+    "build": "node build.js",
+    "dev": "npm run build && python3 -m http.server 8001 -d dist",
+    "deploy": "npm run build && wrangler pages deploy ./dist --project-name=blog-fahru-me"
   },
   "devDependencies": {
     "wrangler": "^4"
+  },
+  "dependencies": {
+    "marked": "^15.0.0"
   }
 }

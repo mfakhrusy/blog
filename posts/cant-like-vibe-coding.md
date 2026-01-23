@@ -1,29 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Can't Enjoy Vibe Coding - Fahru's Finite Space</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="navbar"></div>
+---
+title: I can't enjoy vibe-coding
+date: July 11, 2025
+slug: cant-like-vibe-coding
+---
 
-    <main class="container container-post">
-        <article class="post-full">
-            <header class="post-header">
-                <h2>I can't enjoy vibe-coding</h2>
-                <p class="post-meta">Published on July 11, 2025 by yours truly</p>
-            </header>
-
-            <div class="post-content"></div>
-        </article>
-    </main>
-
-    <script id="md-content" type="text/markdown">
 I can't enjoy doing things people are doing. I can't enjoy the new paradigm of doing programming. I can't enjoy vibecoding. I currently have copilot in my local IDE, I use it, I have it enabled. But I just can't enjoy myself to keep using it. I use it, occasionally, if I'm too lazy to do something, like generating tests, but any other task, I don't think that's for me.
 
 I kept seeing people saying they have their productivity increased by using IDEs like Cursor and Windsurf. I see a lot of claims in the internet: How one create a new software easily, or one able to boost their productivity by x times. Maybe it's true, maybe it's not. In my case, it's true to a sense, for example, again, when writing tests (I hate it).
@@ -41,13 +21,3 @@ As you can see, I haven't even changed its title and it's a raw, unedited articl
 Although the premise of the article is that I don't enjoy this new programming paradigm, but this site is a product of it. Hence, is this site not born out of love? Probably... This site is so simple I don't think I enjoy even the process of hand-writiting it, like I said above.
 
 This feeling may also be a coping mechanism. I'm currently trying so hard to reject it. People are normalizing this new paradigm. The further I can go is to install Copilot because I got it for free (this copilot keep suggesting stuffs as I'm writing this). I may in the denial phase, but I may not, since I at least know a recent study that express [negativity toward AI-powered programming in terms of productivity](https://web.archive.org/web/20250711162101/https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/).
-    </script>
-
-    <footer class="container">
-        <p>&#8508; Hi, there.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>

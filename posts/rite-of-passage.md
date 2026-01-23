@@ -1,29 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rite of Passage - Fahru's Finite Space</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="navbar"></div>
+---
+title: Rite of passage
+date: July 10, 2025
+slug: rite-of-passage
+---
 
-    <main class="container container-post">
-        <article class="post-full">
-            <header class="post-header">
-                <h2>Rite of passage</h2>
-                <p class="post-meta">Published on July 10, 2025 by yours truly</p>
-            </header>
-
-            <div class="post-content"></div>
-        </article>
-    </main>
-
-    <script id="md-content" type="text/markdown">
 How many times do I have to create a new blogging platform?
 
 This question keeps popping out in my mind as I keep trying to make a new one.
@@ -42,13 +22,3 @@ Firstly, I have tried to create a blog multiple times with these approaches:
 - In the past, I also have created a blog using static site generator like Jekyll, I think this is when I started doing programming work
 
 In the ended up just using plain old HTML, CSS, and maybe some JS if I need some interactivity. I quite literally hand-write this blog post in HTML, it feels refreshing. I don't need any build system, I don't need any markdown parser, I don't need any complicated deployment process. I can just, write, and upload the files somewhere. It's freeing.
-    </script>
-
-    <footer class="container">
-        <p>&#8508; Hi, there.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>

@@ -1,29 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>std::fahru - The Math Academy Way</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="navbar"></div>
+---
+title: "The Math Academy Way: Overall initial pre-reading impression"
+date: August xx (draft), 2025
+slug: the-math-academy-way-books
+---
 
-    <main class="container container-post">
-        <article class="post-full">
-            <header class="post-header">
-                <h2>The Math Academy Way: Overall initial pre-reading impression</h2>
-                <p class="post-meta">Published on August xx (draft), 2025 by yours truly</p>
-            </header>
-
-            <div class="post-content"></div>
-        </article>
-    </main>
-
-    <script id="md-content" type="text/markdown">
 This book is fascinating!
 
 [Read it here](https://docs.google.com/document/d/1LLZK_34Oer9LwuqAv-pqxfXlR8n7V8zJ_MO323R7egI/edit?usp=sharing)
@@ -39,13 +19,3 @@ This seems unintuitive at first, but the reasoning seems to be that it helps wit
 Maybe the most obvious "speciment" to try this is to my kiddo? Well, I'm a student too, so maybe I can implement this? Let's say I'm taking a Reinforcement Class, how would this interleaving method works in my case?
 
 Or maybe, we can do it a little bit further. I can study two subjects at the same time. For example: Electronics and Reinforcement Learning. Sounds bizarre, but I'm also in the process of learning electronics by myself from scratch, and I need to learn RL for my school. Can I try to combine it? Let's find out in the next couple of months!
-    </script>
-
-    <footer class="container">
-        <p>&#8508; Hi, there.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
