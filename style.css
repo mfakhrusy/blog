@@ -10,6 +10,7 @@
     --secondary-color: #7a5f5a;
     --accent-color: #d4726a;
     --background-color: #fff5f0;
+    --background-gradient: linear-gradient(165deg, #fff5f0 0%, #ffe8dc 50%, #ffd8c8 100%);
     --surface-color: #ffe8dc;
     --border-color: #f0d0c0;
     --code-bg-color: #2d2424;
@@ -23,6 +24,7 @@
     --secondary-color: #5a5a5a;
     --accent-color: #3d7eeb;
     --background-color: #ffffff;
+    --background-gradient: linear-gradient(165deg, #ffffff 0%, #f8fafc 50%, #f0f4f8 100%);
     --surface-color: #f9f9f9;
     --border-color: #eaeaea;
     --code-bg-color: #2d2d2d;
@@ -30,17 +32,18 @@
     --inline-code-bg: #eef1f5;
 }
 
-/* Dusk - warm orange/purple sunset */
+/* Dusk - purple/lavender sunset */
 [data-theme="dusk"] {
-    --primary-color: #2d1f3d;
-    --secondary-color: #6b5a7a;
-    --accent-color: #e07850;
-    --background-color: #faf0eb;
-    --surface-color: #f0e0d8;
-    --border-color: #dcc8be;
-    --code-bg-color: #2d2030;
-    --code-text-color: #f0e8f0;
-    --inline-code-bg: #ebe0e8;
+    --primary-color: #2d2645;
+    --secondary-color: #6a5f8a;
+    --accent-color: #9b6dd4;
+    --background-color: #f5f0fa;
+    --background-gradient: linear-gradient(165deg, #f5f0fa 0%, #ebe4f5 50%, #e0d8f0 100%);
+    --surface-color: #ebe4f5;
+    --border-color: #d4c8e8;
+    --code-bg-color: #252030;
+    --code-text-color: #e8e0f8;
+    --inline-code-bg: #e8e0f0;
 }
 
 /* Night - dark mode */
@@ -49,6 +52,7 @@
     --secondary-color: #a0a0a0;
     --accent-color: #7eb8ff;
     --background-color: #0d1117;
+    --background-gradient: linear-gradient(165deg, #0d1117 0%, #111820 50%, #151d28 100%);
     --surface-color: #161b22;
     --border-color: #30363d;
     --code-bg-color: #1a1a24;
@@ -60,7 +64,9 @@ body {
     font-family: var(--font-family-sans);
     line-height: 1.7;
     color: var(--primary-color);
-    background-color: var(--background-color);
+    background: var(--background-gradient);
+    background-attachment: fixed;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
 }
