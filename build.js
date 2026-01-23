@@ -42,7 +42,7 @@ ${content}
     </main>
 
     <footer class="container">
-        <p>&#8508; Hi, there &#8508; · <a href="/rss.xml">RSS</a></p>
+        <p>&#8508; Hi, there &#8508; · <a href="https://fahru.me">Main Site</a> · <a href="/rss.xml">RSS</a></p>
     </footer>
 
     <script src="script.js"></script>
