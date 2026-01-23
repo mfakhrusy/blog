@@ -42,7 +42,7 @@ ${content}
     </main>
 
     <footer class="container">
-        <p>&#8508; Hi, there.</p>
+        <p>&#8508; Hi, there &#8508; · <a href="/rss.xml">RSS</a></p>
     </footer>
 
     <script src="script.js"></script>
@@ -83,15 +83,52 @@ if (fs.existsSync('./assets')) {
 }
 
 // Build markdown posts
-const posts = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
-posts.forEach(file => {
+const postFiles = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
+const postsData = postFiles.map(file => {
     const content = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
     const { meta, body } = parseFrontmatter(content);
     const html = marked(body);
+    const slug = meta.slug || file.replace('.md', '');
+    return { meta, html, slug, file };
+});
+
+postsData.forEach(({ meta, html, slug }) => {
     const output = template(meta.title || 'Untitled', meta.date || '', html);
-    const outFile = (meta.slug || file.replace('.md', '')) + '.html';
+    const outFile = slug + '.html';
     fs.writeFileSync(path.join(OUT_DIR, outFile), output);
     console.log(`Built: ${outFile}`);
 });
+
+// Generate RSS feed
+const SITE_URL = 'https://fahru.my.id';
+const rssItems = postsData
+    .filter(p => p.meta.date)
+    .sort((a, b) => new Date(b.meta.date) - new Date(a.meta.date))
+    .map(({ meta, html, slug }) => {
+        const pubDate = new Date(meta.date).toUTCString();
+        return `    <item>
+      <title><![CDATA[${meta.title || 'Untitled'}]]></title>
+      <link>${SITE_URL}/${slug}.html</link>
+      <guid>${SITE_URL}/${slug}.html</guid>
+      <pubDate>${pubDate}</pubDate>
+      <description><![CDATA[${html}]]></description>
+    </item>`;
+    })
+    .join('\n');
+
+const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fahru's Finite Space</title>
+    <link>${SITE_URL}</link>
+    <description>A blog by Fahru</description>
+    <language>en-us</language>
+    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
+${rssItems}
+  </channel>
+</rss>`;
+
+fs.writeFileSync(path.join(OUT_DIR, 'rss.xml'), rssFeed);
+console.log('Built: rss.xml');
 
 console.log('Build complete!');
