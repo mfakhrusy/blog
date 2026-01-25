@@ -15,6 +15,10 @@
     --border-color: #f0d0c0;
     --code-bg-color: #2d2424;
     --code-text-color: #f8e8e0;
+    --code-line-number-color: #a08880;
+    --code-border-color: #4a3a38;
+    --code-btn-color: #c0a8a0;
+    --code-btn-hover-bg: rgba(255, 232, 224, 0.15);
     --inline-code-bg: #f5e0d8;
 }
 
@@ -29,6 +33,10 @@
     --border-color: #eaeaea;
     --code-bg-color: #2d2d2d;
     --code-text-color: #f8f8f2;
+    --code-line-number-color: #888888;
+    --code-border-color: #444444;
+    --code-btn-color: #aaaaaa;
+    --code-btn-hover-bg: rgba(255, 255, 255, 0.15);
     --inline-code-bg: #eef1f5;
 }
 
@@ -43,6 +51,10 @@
     --border-color: #d4c8e8;
     --code-bg-color: #252030;
     --code-text-color: #e8e0f8;
+    --code-line-number-color: #8a80a8;
+    --code-border-color: #3d3550;
+    --code-btn-color: #a090c0;
+    --code-btn-hover-bg: rgba(235, 228, 245, 0.15);
     --inline-code-bg: #e8e0f0;
 }
 
@@ -57,6 +69,10 @@
     --border-color: #30363d;
     --code-bg-color: #1a1a24;
     --code-text-color: #e0e8f0;
+    --code-line-number-color: #6a7080;
+    --code-border-color: #2a2a3a;
+    --code-btn-color: #8890a0;
+    --code-btn-hover-bg: rgba(126, 184, 255, 0.15);
     --inline-code-bg: #21262d;
 }
 
@@ -229,44 +245,71 @@ pre {
     background-color: var(--code-bg-color);
     color: var(--code-text-color);
     font-family: var(--font-family-mono);
-    padding: 1.5rem;
-    padding-left: 0;
     border-radius: 8px;
     overflow-x: auto;
     font-size: 0.9rem;
-    line-height: 1.5;
+    line-height: 1.6;
     margin: 2rem 0;
     position: relative;
+    display: flex;
+    padding: 0;
 }
 
 pre .code-lang {
     position: absolute;
     top: 0.5rem;
     right: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--secondary-color);
+    font-size: 0.7rem;
+    color: var(--code-btn-color);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    opacity: 0.7;
+}
+
+pre .code-copy-btn {
+    position: absolute;
+    top: 0.4rem;
+    right: 3.5rem;
+    font-size: 0.7rem;
+    font-family: var(--font-family-sans);
+    background: transparent;
+    border: 1px solid var(--code-btn-color);
+    color: var(--code-btn-color);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+pre:hover .code-copy-btn {
+    opacity: 0.8;
+}
+
+pre .code-copy-btn:hover {
+    opacity: 1;
+    background: var(--code-btn-hover-bg);
+}
+
+pre .line-numbers {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0.75rem 1rem 1rem;
+    margin-right: 0;
+    border-right: 1px solid var(--code-border-color);
+    text-align: right;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+pre .line-numbers .line-number {
+    color: var(--code-line-number-color);
 }
 
 pre code {
     display: block;
-    padding-top: 1rem;
-}
-
-pre code .line {
-    display: block;
-}
-
-pre code .line-number {
-    display: inline-block;
-    width: 3rem;
-    padding-right: 1rem;
-    text-align: right;
-    color: var(--secondary-color);
-    opacity: 0.5;
-    user-select: none;
+    flex: 1;
+    padding: 1rem 1rem 1rem 1rem;
+    overflow-x: auto;
 }
 
 code {

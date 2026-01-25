@@ -52,6 +52,9 @@ ${content}
     <script>
         hljs.highlightAll();
         document.querySelectorAll('pre code').forEach((block) => {
+            // Store original text for copy functionality
+            block.dataset.rawCode = block.textContent;
+            
             // Add language label
             const lang = block.className.match(/language-(\\w+)/)?.[1];
             if (lang) {
@@ -60,11 +63,32 @@ ${content}
                 label.textContent = lang;
                 block.parentElement.insertBefore(label, block);
             }
-            // Add line numbers
+            
+            // Add copy button
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'code-copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(block.dataset.rawCode);
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+                } catch (err) {
+                    copyBtn.textContent = 'Failed';
+                    setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+                }
+            });
+            block.parentElement.insertBefore(copyBtn, block);
+            
+            // Add line numbers (outside code element to avoid hljs re-processing)
             const lines = block.innerHTML.split('\\n');
-            block.innerHTML = lines.map((line, i) => 
-                \`<span class="line"><span class="line-number">\${i + 1}</span>\${line}</span>\`
+            const lineNumbers = document.createElement('span');
+            lineNumbers.className = 'line-numbers';
+            lineNumbers.setAttribute('aria-hidden', 'true');
+            lineNumbers.innerHTML = Array.from({length: lines.length}, (_, i) => 
+                \`<span class="line-number">\${i + 1}</span>\`
             ).join('\\n');
+            block.parentElement.insertBefore(lineNumbers, block);
         });
     </script>
 
