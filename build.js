@@ -18,7 +18,7 @@ const template = (title, date, content, isDraft = false) => `<!DOCTYPE html>
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@ ${content}
         <p>&#8508; Hi, there &#8508; · <a href="https://fahru.me">Main Site</a> · <a href="/rss.xml">RSS</a></p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
         hljs.highlightAll();
@@ -152,11 +152,17 @@ const draftsData = draftFiles.map(file => {
 
 const allPosts = [...postsData, ...draftsData];
 
+// Generate HTML pages for each post.
+// Each post is written to its own directory (e.g., dist/ssh-tunnel/index.html)
+// so the URL can be /ssh-tunnel instead of /ssh-tunnel.html
 allPosts.forEach(({ meta, html, slug, isDraft }) => {
     const output = template(meta.title || 'Untitled', meta.date || '', html, isDraft);
-    const outFile = slug + '.html';
-    fs.writeFileSync(path.join(OUT_DIR, outFile), output);
-    console.log(`Built: ${outFile}${isDraft ? ' (draft)' : ''}`);
+    const postDir = path.join(OUT_DIR, slug);
+    if (!fs.existsSync(postDir)) {
+        fs.mkdirSync(postDir, { recursive: true });
+    }
+    fs.writeFileSync(path.join(postDir, 'index.html'), output);
+    console.log(`Built: ${slug}/index.html${isDraft ? ' (draft)' : ''}`);
 });
 
 // Generate posts.json for dynamic listing on homepage
@@ -182,8 +188,8 @@ const rssItems = postsData
         const pubDate = new Date(meta.date).toUTCString();
         return `    <item>
       <title><![CDATA[${meta.title || 'Untitled'}]]></title>
-      <link>${SITE_URL}/${slug}.html</link>
-      <guid>${SITE_URL}/${slug}.html</guid>
+      <link>${SITE_URL}/${slug}</link>
+      <guid>${SITE_URL}/${slug}</guid>
       <pubDate>${pubDate}</pubDate>
       <description><![CDATA[${html}]]></description>
     </item>`;

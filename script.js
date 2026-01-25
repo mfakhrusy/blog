@@ -2,10 +2,10 @@
 
 // Theme icons - external SVG files
 const themeIcons = {
-    dawn: 'assets/icons/sunrise.svg',
-    noon: 'assets/icons/sun.svg',
-    dusk: 'assets/icons/sunset.svg',
-    night: 'assets/icons/sun-off.svg'
+    dawn: '/assets/icons/sunrise.svg',
+    noon: '/assets/icons/sun.svg',
+    dusk: '/assets/icons/sunset.svg',
+    night: '/assets/icons/sun-off.svg'
 };
 
 const themes = ['dawn', 'noon', 'dusk', 'night'];

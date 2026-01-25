@@ -60,7 +60,7 @@
                 .filter(p => showDrafts || !p.isDraft)
                 .forEach(post => {
                     const clone = template.content.cloneNode(true);
-                    const url = post.slug + '.html';
+                    const url = '/' + post.slug;
                     const title = post.isDraft ? `[DRAFT] ${post.title}` : post.title;
                     clone.querySelector('h3 a').href = url;
                     clone.querySelector('h3 a').textContent = title;
