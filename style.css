@@ -230,11 +230,43 @@ pre {
     color: var(--code-text-color);
     font-family: var(--font-family-mono);
     padding: 1.5rem;
+    padding-left: 0;
     border-radius: 8px;
     overflow-x: auto;
     font-size: 0.9rem;
     line-height: 1.5;
     margin: 2rem 0;
+    position: relative;
+}
+
+pre .code-lang {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+pre code {
+    display: block;
+    padding-top: 1rem;
+}
+
+pre code .line {
+    display: block;
+}
+
+pre code .line-number {
+    display: inline-block;
+    width: 3rem;
+    padding-right: 1rem;
+    text-align: right;
+    color: var(--secondary-color);
+    opacity: 0.5;
+    user-select: none;
 }
 
 code {

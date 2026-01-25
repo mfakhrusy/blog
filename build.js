@@ -3,9 +3,10 @@ const path = require('path');
 const { marked } = require('marked');
 
 const POSTS_DIR = './posts';
+const DRAFTS_DIR = './drafts';
 const OUT_DIR = './dist';
 
-const template = (title, date, content) => `<!DOCTYPE html>
+const template = (title, date, content, isDraft = false) => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,6 +19,7 @@ const template = (title, date, content) => `<!DOCTYPE html>
         })();
     </script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
@@ -46,6 +48,26 @@ ${content}
     </footer>
 
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        document.querySelectorAll('pre code').forEach((block) => {
+            // Add language label
+            const lang = block.className.match(/language-(\\w+)/)?.[1];
+            if (lang) {
+                const label = document.createElement('span');
+                label.className = 'code-lang';
+                label.textContent = lang;
+                block.parentElement.insertBefore(label, block);
+            }
+            // Add line numbers
+            const lines = block.innerHTML.split('\\n');
+            block.innerHTML = lines.map((line, i) => 
+                \`<span class="line"><span class="line-number">\${i + 1}</span>\${line}</span>\`
+            ).join('\\n');
+        });
+    </script>
+
 </body>
 </html>
 `;
@@ -89,15 +111,43 @@ const postsData = postFiles.map(file => {
     const { meta, body } = parseFrontmatter(content);
     const html = marked(body);
     const slug = meta.slug || file.replace('.md', '');
-    return { meta, html, slug, file };
+    return { meta, html, slug, file, isDraft: false };
 });
 
-postsData.forEach(({ meta, html, slug }) => {
-    const output = template(meta.title || 'Untitled', meta.date || '', html);
+// Build drafts
+const draftFiles = fs.existsSync(DRAFTS_DIR) 
+    ? fs.readdirSync(DRAFTS_DIR).filter(f => f.endsWith('.md'))
+    : [];
+const draftsData = draftFiles.map(file => {
+    const content = fs.readFileSync(path.join(DRAFTS_DIR, file), 'utf-8');
+    const { meta, body } = parseFrontmatter(content);
+    const html = marked(body);
+    const slug = meta.slug || file.replace('.md', '');
+    return { meta, html, slug, file, isDraft: true };
+});
+
+const allPosts = [...postsData, ...draftsData];
+
+allPosts.forEach(({ meta, html, slug, isDraft }) => {
+    const output = template(meta.title || 'Untitled', meta.date || '', html, isDraft);
     const outFile = slug + '.html';
     fs.writeFileSync(path.join(OUT_DIR, outFile), output);
-    console.log(`Built: ${outFile}`);
+    console.log(`Built: ${outFile}${isDraft ? ' (draft)' : ''}`);
 });
+
+// Generate posts.json for dynamic listing on homepage
+const postsJson = allPosts
+    .filter(p => p.meta.date)
+    .sort((a, b) => new Date(b.meta.date) - new Date(a.meta.date))
+    .map(({ meta, slug, isDraft }) => ({
+        title: meta.title || 'Untitled',
+        date: meta.date,
+        slug,
+        description: meta.description || '',
+        isDraft
+    }));
+fs.writeFileSync(path.join(OUT_DIR, 'posts.json'), JSON.stringify(postsJson, null, 2));
+console.log('Built: posts.json');
 
 // Generate RSS feed
 const SITE_URL = 'https://blog.fahru.me';
