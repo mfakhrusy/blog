@@ -35,14 +35,363 @@ function cycleTheme() {
     setTheme(themes[nextIndex]);
 }
 
+const API_BASE = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000' 
+    : 'https://api.fahru.me';
+
+const GUESTBOOK_STORAGE_KEY = 'guestbook_submission';
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+function getMainDomain() {
+    const host = window.location.hostname;
+    const parts = host.split('.');
+    if (parts.length >= 2) {
+        return parts.slice(-2).join('.');
+    }
+    return host;
+}
+
+function getSourceUrl(source) {
+    const mainDomain = getMainDomain();
+    return `https://${source}.${mainDomain}`;
+}
+
+async function loadGuestbookEntries() {
+    const container = document.getElementById('guestbook-entries');
+    if (!container) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/guestbook`);
+        if (!response.ok) throw new Error('Failed to load entries');
+        const entries = await response.json();
+        
+        if (entries.length === 0) {
+            container.innerHTML = '<p class="no-entries">No entries yet. Be the first to sign!</p>';
+            return;
+        }
+        
+        container.innerHTML = entries.map(entry => `
+            <article class="guestbook-entry">
+                <div class="entry-header">
+                    <span class="entry-name">${escapeHtml(entry.name)}</span>
+                    ${entry.website ? `<a href="${escapeHtml(entry.website)}" target="_blank" rel="noopener noreferrer" class="entry-website">🔗</a>` : ''}
+                    <span class="entry-date">${formatDate(entry.createdAt)}</span>
+                </div>
+                <p class="entry-message">${escapeHtml(entry.message)}</p>
+                ${entry.source ? `<a href="${getSourceUrl(entry.source)}" target="_blank" rel="noopener noreferrer" class="entry-source">via ${escapeHtml(entry.source)}</a>` : ''}
+            </article>
+        `).join('');
+    } catch (error) {
+        container.innerHTML = '<p class="error">Failed to load entries.</p>';
+        console.error('Error loading guestbook:', error);
+    }
+}
+
+function getStoredSubmission() {
+    try {
+        const stored = localStorage.getItem(GUESTBOOK_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : null;
+    } catch {
+        return null;
+    }
+}
+
+function saveSubmission(entry) {
+    localStorage.setItem(GUESTBOOK_STORAGE_KEY, JSON.stringify(entry));
+}
+
+function updateFormWithSubmission(submission) {
+    const formContainer = document.querySelector('.dialog-left');
+    if (!formContainer || !submission) return;
+    
+    const statusClass = submission.status === 'approved' ? 'approved' : 'pending';
+    const statusText = submission.status === 'approved' 
+        ? '✓ Your message is live!' 
+        : '⏳ Your message is pending review';
+    
+    formContainer.innerHTML = `
+        <div class="submission-status ${statusClass}">
+            <p class="status-label">${statusText}</p>
+            <div class="your-submission">
+                <p class="submission-name">${escapeHtml(submission.name)}</p>
+                <p class="submission-message">${escapeHtml(submission.message)}</p>
+                <p class="submission-date">${formatDate(submission.createdAt)}</p>
+            </div>
+            <div class="submission-actions">
+                <button type="button" class="action-btn edit-btn" onclick="editSubmission()">Edit</button>
+                <button type="button" class="action-btn delete-btn" onclick="deleteSubmission()">Delete</button>
+            </div>
+        </div>
+    `;
+}
+
+function showEditForm(submission) {
+    const formContainer = document.querySelector('.dialog-left');
+    if (!formContainer || !submission) return;
+    
+    formContainer.innerHTML = `
+        <p class="guestbook-intro">Edit your message</p>
+        <form id="guestbook-edit-form" class="guestbook-form" onsubmit="submitEdit(event)">
+            <div class="form-group">
+                <label for="editName">Name</label>
+                <input type="text" id="editName" name="editName" maxlength="100" value="${escapeHtml(submission.name)}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="editMessage">Message <span class="required">*</span></label>
+                <textarea id="editMessage" name="editMessage" required rows="3" maxlength="1000">${escapeHtml(submission.message)}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="editWebsite">Website (optional)</label>
+                <input type="url" id="editWebsite" name="editWebsite" placeholder="https://..." value="${submission.website ? escapeHtml(submission.website) : ''}">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Save</button>
+                <button type="button" class="cancel-btn" onclick="cancelEdit()">Cancel</button>
+            </div>
+            <p id="edit-status" class="form-status"></p>
+        </form>
+    `;
+}
+
+function editSubmission() {
+    const submission = getStoredSubmission();
+    if (submission) showEditForm(submission);
+}
+
+function cancelEdit() {
+    const submission = getStoredSubmission();
+    if (submission) updateFormWithSubmission(submission);
+}
+
+async function submitEdit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const status = document.getElementById('edit-status');
+    const submitBtn = form.querySelector('.submit-btn');
+    const submission = getStoredSubmission();
+    
+    if (!submission) return;
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+    status.textContent = '';
+    status.className = 'form-status';
+
+    const data = {
+        message: form.editMessage.value.trim(),
+        website: form.editWebsite.value.trim() || null
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/api/guestbook/${submission.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error('Failed to update');
+        const result = await response.json();
+        
+        saveSubmission(result);
+        updateFormWithSubmission(result);
+        loadGuestbookEntries();
+    } catch (error) {
+        status.textContent = 'Failed to update. Please try again.';
+        status.className = 'form-status error';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save';
+    }
+}
+
+async function deleteSubmission() {
+    const submission = getStoredSubmission();
+    if (!submission) return;
+    
+    if (!confirm('Delete your guestbook entry?')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/guestbook/${submission.id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete');
+        
+        localStorage.removeItem(GUESTBOOK_STORAGE_KEY);
+        restoreGuestbookForm();
+        loadGuestbookEntries();
+    } catch (error) {
+        alert('Failed to delete. Please try again.');
+    }
+}
+
+function restoreGuestbookForm() {
+    const formContainer = document.querySelector('.dialog-left');
+    if (!formContainer) return;
+    
+    formContainer.innerHTML = `
+        <p class="guestbook-intro">Leave a message! I'd love to hear from you.</p>
+        <form id="guestbook-form" class="guestbook-form" onsubmit="submitGuestbook(event)">
+            <div class="form-group">
+                <label for="guestName">Name <span class="required">*</span></label>
+                <input type="text" id="guestName" name="guestName" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label for="guestMessage">Message <span class="required">*</span></label>
+                <textarea id="guestMessage" name="guestMessage" required rows="3" maxlength="1000"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="guestWebsite">Website (optional)</label>
+                <input type="url" id="guestWebsite" name="guestWebsite" placeholder="https://...">
+            </div>
+            <button type="submit" class="submit-btn">Sign Guestbook</button>
+            <p id="guestbook-status" class="form-status"></p>
+        </form>
+    `;
+}
+
+function openGuestbook() {
+    const dialog = document.getElementById('guestbook-dialog');
+    if (dialog) {
+        dialog.showModal();
+        loadGuestbookEntries();
+        
+        const submission = getStoredSubmission();
+        if (submission) {
+            updateFormWithSubmission(submission);
+        }
+    }
+}
+
+function closeGuestbook() {
+    const dialog = document.getElementById('guestbook-dialog');
+    if (dialog) dialog.close();
+}
+
+async function submitGuestbook(e) {
+    e.preventDefault();
+    const form = e.target;
+    const status = document.getElementById('guestbook-status');
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    status.textContent = '';
+    status.className = 'form-status';
+
+    const data = {
+        name: form.guestName.value.trim(),
+        message: form.guestMessage.value.trim(),
+        website: form.guestWebsite.value.trim() || null,
+        source: 'blog'
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/api/guestbook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error('Failed to submit');
+        const result = await response.json();
+        
+        saveSubmission(result);
+        updateFormWithSubmission(result);
+        loadGuestbookEntries();
+    } catch (error) {
+        status.textContent = 'Failed to submit. Please try again.';
+        status.className = 'form-status error';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Guestbook';
+    }
+}
+
+function injectGuestbookDialog() {
+    if (document.getElementById('guestbook-dialog')) return;
+    
+    const dialog = document.createElement('dialog');
+    dialog.id = 'guestbook-dialog';
+    dialog.className = 'guestbook-dialog';
+    dialog.innerHTML = `
+        <div class="dialog-header">
+            <h2>Guestbook</h2>
+            <button type="button" class="close-btn" onclick="closeGuestbook()" aria-label="Close">&times;</button>
+        </div>
+        <div class="dialog-body">
+            <div class="dialog-left">
+                <p class="guestbook-intro">Leave a message! I'd love to hear from you.</p>
+                <form id="guestbook-form" class="guestbook-form" onsubmit="submitGuestbook(event)">
+                    <div class="form-group">
+                        <label for="guestName">Name <span class="required">*</span></label>
+                        <input type="text" id="guestName" name="guestName" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="guestMessage">Message <span class="required">*</span></label>
+                        <textarea id="guestMessage" name="guestMessage" required rows="3" maxlength="1000"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestWebsite">Website (optional)</label>
+                        <input type="url" id="guestWebsite" name="guestWebsite" placeholder="https://...">
+                    </div>
+                    <button type="submit" class="submit-btn">Sign Guestbook</button>
+                    <p id="guestbook-status" class="form-status"></p>
+                </form>
+            </div>
+            <div class="dialog-right">
+                <div class="guestbook-entries-section">
+                    <h3>Messages</h3>
+                    <div id="guestbook-entries">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(dialog);
+    
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) closeGuestbook();
+    });
+}
+
+function shouldShowGuestbook() {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') return true;
+    if (host.endsWith('.fahru.me') || host === 'fahru.me') return true;
+    if (host.endsWith('.fakhrusy.com') || host === 'fakhrusy.com') return true;
+    return false;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.getElementById('navbar');
+    const showGuestbook = shouldShowGuestbook();
+    
     if (navbar) {
         navbar.innerHTML = `
             <nav class="container">
                 <a href="/">Home</a>
+                ${showGuestbook ? '<a href="#" onclick="openGuestbook(); return false;">Guestbook</a>' : ''}
             </nav>
         `;
+    }
+    
+    if (showGuestbook) {
+        injectGuestbookDialog();
     }
 
     // Initialize theme toggle

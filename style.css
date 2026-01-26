@@ -358,3 +358,330 @@ img.content-image + small {
         display: none;
     }
 }
+
+/* --- Navbar --- */
+#navbar nav {
+    display: flex;
+    gap: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#navbar nav a {
+    font-weight: 500;
+}
+
+/* --- Guestbook Dialog --- */
+.guestbook-dialog {
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--background-color);
+    color: var(--primary-color);
+    overflow: hidden;
+}
+
+.guestbook-dialog .dialog-body {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+.guestbook-dialog .dialog-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.guestbook-dialog .dialog-right {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 600px) {
+    .guestbook-dialog .dialog-body {
+        flex-direction: column;
+    }
+}
+
+.guestbook-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.guestbook-dialog .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--surface-color);
+}
+
+.guestbook-dialog .dialog-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.guestbook-dialog .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--secondary-color);
+    line-height: 1;
+    padding: 0.25rem;
+}
+
+.guestbook-dialog .close-btn:hover {
+    color: var(--primary-color);
+}
+
+.guestbook-dialog .guestbook-intro {
+    margin: 0 0 0.75rem;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.guestbook-form {
+    padding: 0;
+}
+
+.guestbook-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.guestbook-form label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.guestbook-form .required {
+    color: var(--accent-color);
+}
+
+.guestbook-form input,
+.guestbook-form textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--background-color);
+    color: var(--primary-color);
+    font-family: var(--font-family-sans);
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+.guestbook-form input:focus,
+.guestbook-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.guestbook-form .submit-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.guestbook-form .submit-btn:hover {
+    opacity: 0.9;
+}
+
+.guestbook-form .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-status {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.form-status.success {
+    color: #22c55e;
+}
+
+.form-status.error {
+    color: #ef4444;
+}
+
+.guestbook-entries-section {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.guestbook-entries-section h3 {
+    font-size: 1rem;
+    margin: 0 0 0.75rem;
+}
+
+#guestbook-entries {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 300px;
+}
+
+.guestbook-entry {
+    padding: 0.75rem;
+    background: var(--surface-color);
+    border-radius: 8px;
+}
+
+.guestbook-entry .entry-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.guestbook-entry .entry-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.guestbook-entry .entry-website {
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.guestbook-entry .entry-date {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.guestbook-entry .entry-message {
+    margin: 0 0 0.25rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.guestbook-entry .entry-source {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.guestbook-entries-section .no-entries,
+.guestbook-entries-section .loading,
+.guestbook-entries-section .error {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* --- Submission Status --- */
+.submission-status {
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--surface-color);
+}
+
+.submission-status .status-label {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.submission-status.approved .status-label {
+    color: #22c55e;
+}
+
+.submission-status.pending .status-label {
+    color: #f59e0b;
+}
+
+.submission-status .your-submission {
+    padding: 0.75rem;
+    background: var(--background-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.submission-status .submission-name {
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.submission-status .submission-message {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.submission-status .submission-date {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.submission-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.action-btn {
+    padding: 0.4rem 0.75rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.action-btn:hover {
+    opacity: 0.85;
+}
+
+.edit-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+.delete-btn {
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cancel-btn {
+    background: transparent;
+    color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background: var(--surface-color);
+}
