@@ -4,6 +4,21 @@ date: "2026-01-25"
 slug: "ssh-tunnel"
 ---
 
+I had a problem:
+
+- I want to implement guestbook functionality
+
+- On that guestbook, I want to implement an admin to approve/reject bad (inappropriate) guestbook entry submissions
+
+- Which means, I need an admin panel.
+
+
+Admin panel is not a hard thing to implement, but the usual solution is to create a simple auth using email/password for logging in. But, since this "admin panel" is only for me, that feels... wrong. One thing I had in mind was to create a static email/password as an environment variable and save its info in my password manager, but then I was wondering, do we have another solution?
+
+
+Then, I consulted an AI bot, and it suggested that I use an SSH tunnel. "Huh?" was my reaction, so imagine this simple Python HTTP server. It has an /admin route, the catch is, it can only be accessed in the localhost ip address (127.0.0.1). That means, if we run this code remotely, and use ssh to connect to our server with the "-L" flag, we can access the remote server as a localhost of that server, pretty neat, right?
+
+
 ```python
 #!/usr/bin/env python3
 """
