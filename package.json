@@ -3,13 +3,14 @@
   "private": true,
   "scripts": {
     "build": "node build.js",
-    "dev": "npm run build && python3 -m http.server 8001 -d dist",
+    "dev": "node watch.js",
     "deploy": "npm run build && wrangler pages deploy ./dist --project-name=blog-fahru-me"
   },
   "devDependencies": {
     "wrangler": "^4"
   },
   "dependencies": {
+    "chokidar": "^4.0.3",
     "marked": "^15.0.0"
   }
 }

@@ -5,6 +5,38 @@ const { marked } = require('marked');
 const POSTS_DIR = './posts';
 const DRAFTS_DIR = './drafts';
 const OUT_DIR = './dist';
+const DEV_SERVER_PORT = 8001;
+const DEV_HOSTS = new Set(['localhost', '127.0.0.1']);
+const scriptSrcPattern = /(<script\s+[^>]*src=")script\.js("[^>]*><\/script>)/gi;
+
+function injectLiveReload(html) {
+    const script = `\n<script>\n    (function() {\n        try {\n            var source = new EventSource('/__livereload');\n            source.addEventListener('reload', function() {\n                window.location.reload();\n            });\n        } catch (err) {\n            console.warn('Live reload unavailable', err);\n        }\n    })();\n</script>\n`;
+
+    if (html.includes('/__livereload')) {
+        return html;
+    }
+
+    const closingBodyIndex = html.lastIndexOf('</body>');
+    if (closingBodyIndex === -1) {
+        return html + script;
+    }
+
+    return html.slice(0, closingBodyIndex) + script + html.slice(closingBodyIndex);
+}
+
+function fixScriptSrc(html) {
+    return html.replace(scriptSrcPattern, '$1../script.js$2');
+}
+
+function adjustHtmlOutput(html) {
+    const fixed = fixScriptSrc(html);
+    const host = process.env.HOST || 'localhost';
+    const port = Number(process.env.PORT) || DEV_SERVER_PORT;
+    if (DEV_HOSTS.has(host) && port === DEV_SERVER_PORT) {
+        return injectLiveReload(fixed);
+    }
+    return fixed;
+}
 
 const template = (title, date, content, isDraft = false) => `<!DOCTYPE html>
 <html lang="en">
@@ -116,7 +148,7 @@ if (!fs.existsSync(OUT_DIR)) {
 }
 
 // Copy static files
-const staticFiles = ['index.html', 'style.css', 'script.js', 'airfoil-simulation.html'];
+const staticFiles = ['index.html', 'style.css', 'script.js', 'airfoil-simulation.html', '_headers'];
 staticFiles.forEach(file => {
     if (fs.existsSync(file)) {
         fs.copyFileSync(file, path.join(OUT_DIR, file));
@@ -138,6 +170,46 @@ const postsData = postFiles.map(file => {
     return { meta, html, slug, file, isDraft: false };
 });
 
+// Parse HTML frontmatter from HTML comment block
+function parseHtmlFrontmatter(content) {
+    const match = content.match(/^<!--\s*\n---\n([\s\S]*?)\n---\s*\n-->/);
+    if (!match) return { meta: {} };
+    
+    const meta = {};
+    match[1].split('\n').forEach(line => {
+        const [key, ...rest] = line.split(':');
+        if (key && rest.length) {
+            meta[key.trim()] = rest.join(':').trim().replace(/^["']|["']$/g, '');
+        }
+    });
+    return { meta };
+}
+
+// Copy and process HTML files from drafts
+const draftHtmlData = [];
+if (fs.existsSync(DRAFTS_DIR)) {
+    const draftHtmlFiles = fs.readdirSync(DRAFTS_DIR).filter(f => f.endsWith('.html'));
+    draftHtmlFiles.forEach(file => {
+        const content = fs.readFileSync(path.join(DRAFTS_DIR, file), 'utf-8');
+        const { meta } = parseHtmlFrontmatter(content);
+        const slug = meta.slug || file.replace('.html', '');
+        
+        const htmlDir = path.join(OUT_DIR, slug);
+        if (!fs.existsSync(htmlDir)) {
+            fs.mkdirSync(htmlDir, { recursive: true });
+        }
+        const outputPath = path.join(htmlDir, 'index.html');
+        fs.copyFileSync(path.join(DRAFTS_DIR, file), outputPath);
+        const rawHtml = fs.readFileSync(outputPath, 'utf-8');
+        fs.writeFileSync(outputPath, adjustHtmlOutput(rawHtml));
+        console.log(`Copied draft HTML: ${slug}/index.html`);
+        
+        if (meta.title) {
+            draftHtmlData.push({ meta, slug, file, isDraft: true, isHtml: true });
+        }
+    });
+}
+
 // Build drafts
 const draftFiles = fs.existsSync(DRAFTS_DIR) 
     ? fs.readdirSync(DRAFTS_DIR).filter(f => f.endsWith('.md'))
@@ -150,18 +222,19 @@ const draftsData = draftFiles.map(file => {
     return { meta, html, slug, file, isDraft: true };
 });
 
-const allPosts = [...postsData, ...draftsData];
+const allPosts = [...postsData, ...draftsData, ...draftHtmlData];
 
 // Generate HTML pages for each post.
 // Each post is written to its own directory (e.g., dist/ssh-tunnel/index.html)
 // so the URL can be /ssh-tunnel instead of /ssh-tunnel.html
-allPosts.forEach(({ meta, html, slug, isDraft }) => {
+// Skip HTML drafts as they're already copied directly
+allPosts.filter(p => !p.isHtml).forEach(({ meta, html, slug, isDraft }) => {
     const output = template(meta.title || 'Untitled', meta.date || '', html, isDraft);
     const postDir = path.join(OUT_DIR, slug);
     if (!fs.existsSync(postDir)) {
         fs.mkdirSync(postDir, { recursive: true });
     }
-    fs.writeFileSync(path.join(postDir, 'index.html'), output);
+    fs.writeFileSync(path.join(postDir, 'index.html'), adjustHtmlOutput(output));
     console.log(`Built: ${slug}/index.html${isDraft ? ' (draft)' : ''}`);
 });
 
