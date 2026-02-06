@@ -154,7 +154,7 @@ The `bwrap` executable is our bubblewrap binary, with all of the configuration t
   src="https://c-playground.fahru.me">
 </iframe>
 
-To actually tested whether the sandboxing isolation works, I created some evil-looking code, for example, you can copy this C code to the playground above:
+To actually tested whether the sandboxing isolation works, this is some evil-looking code for example, and you can copy this C code to the playground above:
 
 ```c
 #include <stdio.h>
@@ -298,7 +298,7 @@ int main() {
         }
     }
     
-    // 10. Write test (should fail)
+    // 10. Write test (should not write anywhere in the file system)
     printf("\n[*] Testing write access to /...\n");
     f = fopen("/hacked.txt", "w");
     if (f) {
@@ -318,3 +318,65 @@ int main() {
 This is the screenshot of the result, the "CRITICAL: Can write to filesystem!" seems like a problem at first, but actually, the "hacked.txt" is created inside the temporary root folder of the bwrap sandbox, pretty cool huh? That means, that file was indeed created when I run the code, but it's not created inside a real root, but in a simulated/sandboxed root.
 
 ![Site State](../assets/code-playground/code-playground-1.png)
+
+To also demonstrate an unsafe code playground, you can try to run this <a href="https://github.com/mfakhrusy/code-playground/tree/main/unsafe" rel="noopener noreferrer">UNSAFE code</a> anywhere in your local system. I'll copy the relevant python code here:
+
+
+```python
+    def execute_c_code(self, code):
+        work_dir = tempfile.mkdtemp(prefix='c_exec_')
+        source_file = os.path.join(work_dir, 'main.c')
+        binary_file = os.path.join(work_dir, 'main')
+
+        try:
+            with open(source_file, 'w') as f:
+                f.write(code)
+
+            # Compile directly - no sandbox
+            compile_result = subprocess.run(
+                ['gcc', '-o', binary_file, source_file, '-lm', '-Wall', '-Wextra'],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+
+            if compile_result.returncode != 0:
+                return {
+                    'success': False,
+                    'stage': 'compile',
+                    'stderr': compile_result.stderr[:MAX_STDERR],
+                    'exit_code': compile_result.returncode
+                }
+
+            # Run directly - no sandbox
+            run_result = subprocess.run(
+                [binary_file],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+
+            return {
+                'success': run_result.returncode == 0,
+                'stage': 'run',
+                'stdout': run_result.stdout[:MAX_STDOUT],
+                'stderr': run_result.stderr[:MAX_STDERR],
+                'exit_code': run_result.returncode
+            }
+
+        except subprocess.TimeoutExpired:
+            return {'success': False, 'stage': 'timeout', 'stderr': 'Execution timed out', 'exit_code': -1}
+        except Exception as e:
+            return {'success': False, 'stage': 'error', 'stderr': str(e), 'exit_code': -1}
+        finally:
+            shutil.rmtree(work_dir, ignore_errors=True)
+```
+
+If I run it (along with the client-side code):
+
+<video controls width="100%">
+  <source src="/assets/code-playground/hacked_demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+It successfully writes a text file inside my local directory!
