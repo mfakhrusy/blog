@@ -317,4 +317,4 @@ int main() {
 
 This is the screenshot of the result, the "CRITICAL: Can write to filesystem!" seems like a problem at first, but actually, the "hacked.txt" is created inside the temporary root folder of the bwrap sandbox, pretty cool huh? That means, that file was indeed created when I run the code, but it's not created inside a real root, but in a simulated/sandboxed root.
 
-<img src="code-playground-1.png">
+![Site State](../assets/code-playground/code-playground-1.png)
