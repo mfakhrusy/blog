@@ -160,6 +160,25 @@ if (fs.existsSync('./assets')) {
     fs.cpSync('./assets', path.join(OUT_DIR, 'assets'), { recursive: true });
 }
 
+// Copy draft images referenced by markdown (e.g., ../image.png from dist/slug/index.html)
+const draftImageExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp']);
+if (fs.existsSync(DRAFTS_DIR)) {
+    const assetsOutDir = path.join(OUT_DIR, 'assets');
+    if (!fs.existsSync(assetsOutDir)) {
+        fs.mkdirSync(assetsOutDir, { recursive: true });
+    }
+    fs.readdirSync(DRAFTS_DIR).forEach(file => {
+        const ext = path.extname(file).toLowerCase();
+        if (!draftImageExtensions.has(ext)) {
+            return;
+        }
+        const sourcePath = path.join(DRAFTS_DIR, file);
+        const destPath = path.join(OUT_DIR, file);
+        fs.copyFileSync(sourcePath, destPath);
+        fs.copyFileSync(sourcePath, path.join(assetsOutDir, file));
+    });
+}
+
 // Build markdown posts
 const postFiles = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
 const postsData = postFiles.map(file => {
