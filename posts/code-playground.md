@@ -375,7 +375,7 @@ To also demonstrate an unsafe code playground, you can try to run this <a href="
 If I run it (along with the client-side code):
 
 <video controls width="100%">
-  <source src="/assets/code-playground/hacked_demo.mp4" type="video/mp4">
+  <source src="/assets/code-playground/hacked_demo_lowres.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
