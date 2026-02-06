@@ -1,5 +1,5 @@
 ---
-title: "Learning about linux sandboxing by building a Coding Playground"
+title: "Creating a simple Code Playground in a sandboxed environment"
 date: "2026-02-06"
 slug: "code-playground"
 ---
