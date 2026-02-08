@@ -65,7 +65,7 @@ const template = (title, date, content, isDraft = false) => `<!DOCTYPE html>
     <main class="container container-post">
         <article class="post-full">
             <header class="post-header">
-                <h2>${title}</h2>
+                <h1>${title}</h1>
                 <p class="post-meta">Published on ${date} by yours truly</p>
             </header>
 

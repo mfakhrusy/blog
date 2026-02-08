@@ -377,6 +377,46 @@ function shouldShowGuestbook() {
     return false;
 }
 
+function positionInlineTooltip(trigger) {
+    const tooltip = trigger.querySelector('.tooltip-bubble');
+    if (!tooltip) return;
+
+    tooltip.style.setProperty('--tooltip-shift', '0px');
+
+    const tooltipWidth = tooltip.offsetWidth;
+    if (!tooltipWidth) return;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const padding = 8;
+    const left = triggerRect.left + (triggerRect.width / 2) - (tooltipWidth / 2);
+    const right = left + tooltipWidth;
+    let shift = 0;
+
+    if (left < padding) {
+        shift = padding - left;
+    } else if (right > window.innerWidth - padding) {
+        shift = (window.innerWidth - padding) - right;
+    }
+
+    if (shift !== 0) {
+        tooltip.style.setProperty('--tooltip-shift', `${shift}px`);
+    }
+}
+
+function bindTooltipPositioning() {
+    const tooltipTriggers = document.querySelectorAll('.inline-tooltip');
+
+    tooltipTriggers.forEach((trigger) => {
+        const schedulePositioning = () => requestAnimationFrame(() => positionInlineTooltip(trigger));
+        trigger.addEventListener('mouseenter', schedulePositioning);
+        trigger.addEventListener('focusin', schedulePositioning);
+    });
+
+    window.addEventListener('resize', () => {
+        tooltipTriggers.forEach((trigger) => positionInlineTooltip(trigger));
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.getElementById('navbar');
     const showGuestbook = shouldShowGuestbook();
@@ -423,4 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ripple.addEventListener('animationend', () => ripple.remove());
     });
+
+    bindTooltipPositioning();
 });

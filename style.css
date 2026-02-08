@@ -109,6 +109,35 @@ a:hover {
     color: var(--primary-color);
 }
 
+a.tag-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0.05em 0.45em;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--accent-color) 12%, var(--background-color));
+    color: var(--accent-color);
+    font-weight: 500;
+    font-size: 0.85em;
+    letter-spacing: 0.005em;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+
+a.tag-button:hover {
+    color: var(--primary-color);
+    background: color-mix(in srgb, var(--accent-color) 18%, var(--background-color));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+a.tag-button:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
 h1, h2, h3 {
     font-weight: 700;
     line-height: 1.2;
@@ -251,13 +280,102 @@ footer {
     margin-bottom: 3rem;
 }
 
-.post-full h2 {
+.post-full h1 {
     font-size: 2.2rem;
     margin-bottom: 0.5rem;
 }
 
 .post-content p {
     margin-bottom: 1.5rem;
+}
+
+.post-content figure {
+    margin: 2rem 0;
+}
+
+.post-content figure img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.post-content figure:has(img) figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.post-content .image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.post-content .image-grid figure {
+    margin: 0;
+}
+
+.post-content .image-grid .image-grid-full {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+    .post-content .image-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .post-content .image-grid .image-grid-full {
+        grid-column: auto;
+    }
+
+    .post-content .image-grid img {
+        max-height: 350px;
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+}
+
+/* --- Quote Block --- */
+.quote-block {
+    margin: 2rem 0;
+    padding: 0;
+}
+
+.quote-block blockquote {
+    margin: 0;
+    padding: 0.5rem 1.5rem;
+    border-left: 4px solid var(--accent-color);
+    background: color-mix(in srgb, var(--surface-color) 92%, var(--accent-color) 8%);
+    font-style: italic;
+    color: var(--primary-color);
+}
+
+.quote-block blockquote::before {
+    content: "\201C";
+    font-size: 2.25rem;
+    line-height: 0;
+    margin-right: 0.35rem;
+    vertical-align: -0.4rem;
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.post-content figure.quote-block figcaption {
+    margin-top: 0.6rem;
+    padding-left: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    text-align: left;
+}
+
+.quote-block figcaption::before {
+    content: "\2014 ";
 }
 
 /* --- Code Blocks --- */
@@ -354,6 +472,82 @@ img.content-image {
 
 img.content-image + small {
     margin-top: 0.5rem;
+}
+
+/* --- Inline Tooltip --- */
+.inline-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15em;
+    cursor: help;
+}
+
+.inline-tooltip sup {
+    font-size: 0.65em;
+    line-height: 1;
+    color: var(--secondary-color);
+    display: inline-block;
+    transform: translateY(-0.45em);
+}
+
+.inline-tooltip:focus {
+    outline: none;
+}
+
+.inline-tooltip:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.tooltip-bubble {
+    --tooltip-shift: 0px;
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.35rem);
+    transform: translateX(calc(-50% + var(--tooltip-shift)));
+    width: max-content;
+    max-width: min(520px, 90vw);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-color) 75%, var(--accent-color) 25%);
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    transform-origin: bottom center;
+    z-index: 20;
+}
+
+.tooltip-bubble img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.tooltip-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(calc(-50% - var(--tooltip-shift)));
+    border-width: 6px 6px 0 6px;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--background-color) 75%, var(--accent-color) 25%) transparent transparent transparent;
+}
+
+.inline-tooltip:hover .tooltip-bubble,
+.inline-tooltip:focus-within .tooltip-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(calc(-50% + var(--tooltip-shift))) translateY(-4px);
 }
 
 /* --- Water Ripple Effect --- */
