@@ -1,6 +1,7 @@
 ---
 title: "SSH Tunnel"
 date: "2026-01-25"
+updated_date: "2026-02-08"
 slug: "ssh-tunnel"
 ---
 

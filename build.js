@@ -38,7 +38,7 @@ function adjustHtmlOutput(html) {
     return fixed;
 }
 
-const template = (title, date, content, isDraft = false) => `<!DOCTYPE html>
+const template = (title, date, updatedDate, content, isDraft = false) => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -67,6 +67,7 @@ const template = (title, date, content, isDraft = false) => `<!DOCTYPE html>
             <header class="post-header">
                 <h1>${title}</h1>
                 <p class="post-meta">Published on ${date} by yours truly</p>
+                ${updatedDate ? `<p class="post-meta">Updated on ${updatedDate}</p>` : ''}
             </header>
 
             <div class="post-content">
@@ -248,7 +249,13 @@ const allPosts = [...postsData, ...draftsData, ...draftHtmlData];
 // so the URL can be /ssh-tunnel instead of /ssh-tunnel.html
 // Skip HTML drafts as they're already copied directly
 allPosts.filter(p => !p.isHtml).forEach(({ meta, html, slug, isDraft }) => {
-    const output = template(meta.title || 'Untitled', meta.date || '', html, isDraft);
+    const output = template(
+        meta.title || 'Untitled',
+        meta.date || '',
+        meta.updated_date || '',
+        html,
+        isDraft
+    );
     const postDir = path.join(OUT_DIR, slug);
     if (!fs.existsSync(postDir)) {
         fs.mkdirSync(postDir, { recursive: true });

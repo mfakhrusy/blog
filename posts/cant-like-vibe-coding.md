@@ -1,6 +1,7 @@
 ---
 title: I can't enjoy vibe-coding
 date: July 11, 2025
+updated_date: 2026-02-08
 slug: cant-like-vibe-coding
 ---
 
