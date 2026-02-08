@@ -477,10 +477,13 @@ img.content-image + small {
 /* --- Inline Tooltip --- */
 .inline-tooltip {
     position: relative;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.15em;
+    display: inline;
     cursor: help;
+}
+
+.inline-tooltip a {
+    white-space: normal;
+    word-break: break-word;
 }
 
 .inline-tooltip sup {
@@ -488,6 +491,7 @@ img.content-image + small {
     line-height: 1;
     color: var(--secondary-color);
     display: inline-block;
+    margin-left: 0.15em;
     transform: translateY(-0.45em);
 }
 
