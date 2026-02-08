@@ -1,5 +1,5 @@
 ---
-title: "Making intuitive sense of Attention"
+title: "Making Intuitive Sense of Attention"
 date: "2026-02-06"
 slug: "attention"
 ---
