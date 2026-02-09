@@ -492,7 +492,7 @@ img.content-image + small {
     color: var(--secondary-color);
     display: inline-block;
     margin-left: 0.15em;
-    transform: translateY(-0.45em);
+    /* transform: translateY(-0.2em); */
 }
 
 .inline-tooltip:focus {
