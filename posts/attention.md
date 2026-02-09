@@ -4,7 +4,7 @@ date: "2026-02-08"
 slug: "attention"
 ---
 
-Recently, I've been digging deeper into how large language models (LLMs) actually work, including their underlying mechanism: transformers. Inside <span class="inline-tooltip" tabindex="0"><a href="https://en.wikipedia.org/wiki/Attention_Is_All_You_Need" target="_blank" rel="noopener noreferrer">the transformer paper</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-wiki.png"></span></span>, there is a single word that caught my eye: Attention. This "Attention" word is special because it does not look like technical jargon—it's just an english word; there is no inherent technical meaning to it. In my field (software engineering), the jargons are much more specialized. As an example, we have latency, scalability, idempotence, and immutability. I don't think anyone would ever use those fancy words in a real and normal conversation. But "Attention", that's a common word that's well used in an everyday conversation. Since it's a normal-sounding word, it's hard to get the actual, intuitive sense of the meaning in terms of its technical machine learning usage. I want to visit my favourite online dictionary to understand the common usage:
+Recently, I've been digging deeper into how large language models (LLMs) actually work, including their underlying mechanism: transformers. Inside <span class="inline-tooltip" tabindex="0"><a href="https://en.wikipedia.org/wiki/Attention_Is_All_You_Need" target="_blank" rel="noopener noreferrer">the transformer paper</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-wiki.png"></span></span>, there is a single word that caught my eye: Attention. This "Attention" word is special because it does not look like technical jargon—it's just an English word; there is no inherent technical meaning to it. In my field (software engineering), the jargons are much more specialized. As an example, we have latency, scalability, idempotence, and immutability. I don't think anyone would ever use those fancy words in a real and normal conversation. But "Attention", that's a common word that's well used in an everyday conversation. Since it's a normal-sounding word, it's hard to get the actual, intuitive sense of the meaning in terms of its technical machine learning usage. I want to visit my favourite online dictionary to understand the common usage:
 <figure class="quote-block">
   <blockquote cite="https://www.vocabulary.com/dictionary/attention">
     "May I have your <strong>attention</strong> please?" When you ask that question, you are asking people to focus their mental powers on you. Whether they do or not depends on your next words. You'll have their full <strong>attention</strong> if you say, "Here's $100."
@@ -14,7 +14,7 @@ Recently, I've been digging deeper into how large language models (LLMs) actuall
   </figcaption>
 </figure>
 
-Right, the semantic meaning in conversation is easy enough to understand. So, what does it have to do with LLM, specifically, what makes this word special enough to become the first word of the transformer paper—Attention is all you need? Well, one way to find out.
+The semantic meaning in conversation is easy enough to understand. Then, what does it have to do with LLM? Specifically, what makes this word special enough to become the first word of the transformer paper—Attention is all you need? Well, one way to find out is to read it.
 
 In the <span class="inline-tooltip" tabindex="0"><a href="https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf" rel="noopener noreferrer" target="_blank">paper</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-paper.png"></span></span>, the word "attention" appears 84 times, including four references:
 
@@ -23,7 +23,7 @@ In the <span class="inline-tooltip" tabindex="0"><a href="https://proceedings.ne
 3. *Minh-Thang Luong, Hieu Pham, and Christopher D. Manning.* Effective approaches to attention-based neural machine translation. *arXiv preprint arXiv:1508.04025, 2015.*
 4. *Ankur Parikh, Oscar Täckström, Dipanjan Das, and Jakob Uszkoreit.* A decomposable attention model. *In Empirical Methods in Natural Language Processing, 2016.*
 
-The paper by <span class="inline-tooltip" tabindex="0"><a href="https://arxiv.org/pdf/1508.04025" target="_blank" rel="noopener noreferrer">Luong et al., 2015</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-minh.png"></span></span> is the oldest reference, let's see if the paper offers an intuitive meaning of attention, this quote is taken from the introduction part:
+Among all of these references, the paper by <span class="inline-tooltip" tabindex="0"><a href="https://arxiv.org/pdf/1508.04025" target="_blank" rel="noopener noreferrer">Luong et al., 2015</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-minh.png"></span></span> is written in 2015, the oldest of them all. This passage is taken from its introduction where it firstly mentions attention:
 
 <figure class="quote-block">
   <blockquote cite="https://arxiv.org/pdf/1508.04025">
@@ -34,7 +34,7 @@ The paper by <span class="inline-tooltip" tabindex="0"><a href="https://arxiv.or
   </figcaption>
 </figure>
 
-I... don't think the paper explains it very clearly. It explains that "Attention" allows model to learn better... I guess? But, what is "Attention", I'm trying to find the semantic meaning in the 2015 paper to no avail. It just keeps going between saying that it's a mechanism, an architecture, or a concept, without any intuitive understanding of the word itself. I would like to go back to review the transformer paper, maybe there is a reason that paper is famous:
+I don't think the paper explains the actual meaning of the term "attention" on its own. It explains that "attention" allows the model to learn better. But what is "attention"? This is the main question that I'm trying to find the answer to. The meaning of the word itself, not in relation to something else. Whenever attention is mentioned in the paper, it keeps being explained as either a mechanism, an architecture, or a model without any intuitive understanding of the actual word. This is probably by design; machine learning researchers have probably found the word "attention" to be so common that it doesn't need any specific explanation at all. Let me first go back to the transformer paper:
 
 <figure class="quote-block">
   <blockquote cite="https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf">
@@ -45,7 +45,7 @@ I... don't think the paper explains it very clearly. It explains that "Attention
   </figcaption>
 </figure>
 
-It's also a non-explanatory introduction! There are two ways I can go with this article: I'll keep digging until I found a clear-cut meaning of the word in terms of machine learning, or just accept this non-explanatory explanation and focus on the transformer paper, of which I may derive my own understanding of the "Attention" term myself. I'm choosing the latter since I already have a decent understanding of the word in terms of linguistic conversational usage, and I can bridge it to the machine learning usage by seeing how it's actually used in <span class="inline-tooltip" tabindex="0"><a href="https://en.wikipedia.org/wiki/Attention_Is_All_You_Need" target="_blank" rel="noopener noreferrer">the transformer paper</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-wiki.png"></span></span> itself. I would quote what I think is the best summarization of this paper:
+The paper mentions about attention but it's still a non-explanatory introduction. There are two ways I can go with this exploration: I'll keep digging until I found a clear-cut meaning of the word in the scope of machine learning or just accept this non-explanatory explanation and focus on the transformer paper, of which I may derive my own understanding of the word myself. I'm choosing the latter since I already have a decent understanding of the word in terms of linguistic conversational usage, and I can bridge it to the machine learning usage by seeing how it's actually used in <span class="inline-tooltip" tabindex="0"><a href="https://en.wikipedia.org/wiki/Attention_Is_All_You_Need" target="_blank" rel="noopener noreferrer">the transformer paper</a><sup>?</sup><span class="tooltip-bubble"><img src="../assets/attention/attention-wiki.png"></span></span>. I would quote what I think is the best summarization of this paper:
 
 <figure class="quote-block">
   <blockquote cite="https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf">
@@ -104,7 +104,7 @@ The `seq2seq` model is using an <span class="inline-tooltip" tabindex="0"><a hre
   </figcaption>
 </figure>
 
-I like this explanation a lot. If I may rephrase, I'd say global attention approach of a translation function is when the whole paragraph, the whole chunk of texts—can even be the whole book where the word is sourced from—are considered to get its semantic meaning while local attention is much more focused to just a few neighboring words. Intuitively, I can also say that the global attention function calculation is much more expensive than the local ones; basically a trade-off between resource (time, compute) and quality.
+I love this explanation. Let me rephrase by saying global attention approach of a translation function is when the whole paragraph, the whole chunk of texts—can even be the whole book where the word is sourced from—are considered to get its semantic meaning while local attention is much more focused to just a few neighboring words. Intuitively, I can also say that the global attention function calculation is much more expensive than the local ones; basically a trade-off between resource (time, compute) and quality.
 
 Now, I want to see if I can apply this intuitive understanding of Attention to something that is more familiar: AI-assisted programming. For this example, I would initiate a conversation to a chatbot that uses LLM—transformer—as its main driver. Let's try making a simple python script to handle a POST request. I'm using this query to initiate the conversation to the chatbot:
 
