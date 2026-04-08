@@ -1,0 +1,110 @@
+<!--
+---
+title: "Joining a Book Club - Chapters 1 & 2 of Operating Systems: Three Easy Pieces"
+date: January xx (draft), 2026
+slug: ostep-book-club
+---
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joining a Book Club - OS:TEP Chapters 1 & 2 - My Tech Blog</title>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'noon';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="container post-page-header">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme"></button>
+    </header>
+    <div id="navbar"></div>
+
+    <main class="container container-post">
+        <article class="post-full">
+            <header class="post-header">
+                <h2>Joining a Book Club - Chapters 1 & 2 of Operating Systems: Three Easy Pieces</h2>
+            </header>
+
+            <div class="post-content">
+                <p>Last year, I found a guy in Twitter that advertised his book club, and he intended to do a book club to read Operating Systems: Three Easy Pieces book. A few days ago (around 22 January 2026) the book club has started.</p>
+                <p>So, where it is? That's the unique part of this book club, the club run entirely remotely. This is the first time I joined a book club that runs remotely, but I think it's very interesting! :)</p>
+                <p>So, what do you do? read? well yes, I read. This week is just a starting week with chapter 1 and chapter 2</p>
+
+                <h3>Run C Code</h3>
+                <div class="c-compiler">
+                    <h4 id="status">Loading compiler...</h4>
+                    <pre><code id="stdout"></code></pre>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="container">
+        <p>&#8508; Hi, there.</p>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script type="module">
+        import {
+            init,
+            Wasmer,
+            Directory
+        } from "https://unpkg.com/@wasmer/sdk@latest/dist/index.mjs";
+
+        async function runClang() {
+            const status = document.getElementById("status");
+            const stdout = document.getElementById("stdout");
+
+            status.innerHTML = "Initializing...";
+            await init();
+
+            status.innerHTML = "Fetching clang...";
+            const clang = await Wasmer.fromRegistry("clang/clang");
+            const project = new Directory();
+            await project.writeFile("example.c",
+`#include<stdio.h>
+
+int main() {
+    printf("Hello World");
+    return 0;
+}
+`);
+
+            status.innerHTML = "Generating Wasm...";
+
+            let instance = await clang.entrypoint.run({
+                args: ["/project/example.c", "-o", "/project/example.wasm"],
+                mount: { "/project": project },
+            });
+            const output = await instance.wait();
+
+            if (!output.ok) {
+                throw new Error(`Clang failed with exit code ${output.code}: ${output.stderr}`);
+            }
+
+            status.innerHTML = "Running Wasm...";
+            let wasm = await project.readFile("example.wasm");
+            const example = await Wasmer.fromFile(wasm);
+            const result = await example.entrypoint.run();
+            const outputExample = await result.wait();
+
+            status.innerHTML = "Output:";
+            stdout.textContent = outputExample.stdout;
+        }
+
+        runClang().catch(err => {
+            document.getElementById("status").innerHTML = "Error: " + err.message;
+            console.error(err);
+        });
+    </script>
+</body>
+</html>
